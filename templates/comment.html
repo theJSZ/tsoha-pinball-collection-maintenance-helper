@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h4>Add comment to this issue</h4>
+    <p>{{ issue["content"] }}</p>
+    <hr>
+    <form action="/add_comment" method="POST">
+        <textarea style="resize:none" rows="5" cols="30" name="comment_content"></textarea><br>
+        <input type="submit" value="Add comment">
+        <input type="hidden" name="issue_id" value={{ issue["id"] }}>
+    </form>
+{% endblock %}

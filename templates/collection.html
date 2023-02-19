@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>{{ collection_name }}</h2>
+    <hr>
+    {% for machine in machines %}
+        {% if machine["max_severity"] == 0 %}
+            <a href="/machine_info/{{ machine["id"] }}">{{ machine["name"] }}</a><br>
+        {% endif %}
+        {% if machine["max_severity"] == 1 %}
+            <a href="/machine_info/{{ machine["id"] }}" style="color: #8F8">{{ machine["name"] }}</a><br>
+        {% endif %}
+        {% if machine["max_severity"] == 2 %}
+            <a href="/machine_info/{{ machine["id"] }}" style="color: #FF8">{{ machine["name"] }}</a><br>
+        {% endif %}
+        {% if machine["max_severity"] == 3 %}
+            <a href="/machine_info/{{ machine["id"] }}" style="color: #F88">{{ machine["name"] }}</a><br>
+        {% endif %}
+    {% endfor %}
+    <hr>
+    <form action="/edit_collection", method="GET">
+        <input type="hidden" value={{ collection_id }} name="collection_id">
+        <input type="submit" value="Add machines">
+    </form>
+
+{% endblock %}

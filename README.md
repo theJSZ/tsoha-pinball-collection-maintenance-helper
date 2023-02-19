@@ -7,14 +7,14 @@ In the pinball community it is not unusual to see collections of [several dozen 
 * for the owner (or some other designated person) to see the reported malfunctions
 
 The finished app should have the following features:
-* All users log in with a username and password
-* A user can create a new collection which makes them an admin with regard to that collection
-* An admin can edit the collection afterwards
-* An admin can invite other people to become normal users of a collection
-* Any user can report a malfunction. The report always concerns a certain machine and must include a written description of what is wrong
+TO DO:
 * A photo can be included in the report
-* The malfunction is given a severity rating from 1 (not severe, e.g. a light that is not working) to 3 (very severe, e.g. an important feature of the game is impossible to achieve because a mechanical switch not working)
-* An admin can edit the severity of a malfunction
-* An admin can add a comment to a report
-* An admin can mark a malfunction as fixed
-* An admin can delete reports
+* An admin can invite other people to become normal users of a collection
+
+DONE:
+* All users log in with a username and password DONE
+* A user can create a new collection which makes them an admin with regard to that collection DONE
+* An admin can edit the collection afterwards DONE
+* Any user can report a malfunction. The report always concerns a certain machine and must include a written description of what is wrong DONE
+* The malfunction is given a severity rating from 1 (not severe, e.g. a light that is not working) to 3 (very severe, e.g. an important feature of the game is impossible to achieve because a mechanical switch not working) DONE
+* An admin can mark a malfunction as fixed (i.e. delete the entry) DONE

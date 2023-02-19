@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    {% if not session["username"] %}
+        <form action="/login", method="POST">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            Username:
+                        </td>
+                        <td>
+                            <input type="text" name="username"><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Password:
+                        </td>
+                        <td>
+                            <input type="password" name="password">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <input type="submit" value="Log in">
+        </form>
+        <small>No account? <a href="/register">Click here</a></small>
+
+    {% endif %}
+
+{% endblock %}

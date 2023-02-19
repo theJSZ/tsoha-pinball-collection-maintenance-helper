@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h1>Register as new user</h1>
+
+    <form action="/validate_new_user", method="POST">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        Username:
+                    </td>
+                    <td>
+                        <input type="text" name="username"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Email:
+                    </td>
+                    <td>
+                        <input type="email" name="email" minlength="8"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Password:
+                    </td>
+                    <td>
+                        <input type="password" name="password"><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Confirm password:
+                    </td>
+                    <td>
+                        <input type="password" name="password_confirm">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input type="submit" value="Register">
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </form>
+{% endblock %}

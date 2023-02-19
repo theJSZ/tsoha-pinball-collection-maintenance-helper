@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>{{ machine["name"] }} </h2>
+    <small>
+        <form action="/delete_machine", method="POST">
+            <input type="hidden" value={{ machine["id"] }} name="machine_id">
+            <input type="hidden" value={{ machine["collection_id"] }} name="collection_id">
+            <input class="danger" type="submit" value="Remove machine from collection">
+        </form>
+    </small>
+    <hr>
+    {% if issues %}
+        {% if n_issues == 1 %}
+            <h4>1 issue reported</h4>
+        {% else %}
+            <h4>{{ n_issues }} issues reported</h4>
+        {% endif %}
+        {% for issue in issues %}
+
+            <hr>
+            {% if issue["severity"] == 1 %}
+                <p style="color: #8F8">{{ issue["content"] }}</p>
+            {% endif %}
+            {% if issue["severity"] == 2 %}
+                <p style="color: #FF8">{{ issue["content"] }}</p>
+            {% endif %}
+            {% if issue["severity"] == 3 %}
+                <p style="color: #F88">{{ issue["content"] }}</p>
+            {% endif %}
+            <p>
+                {{ issue["created_at"].strftime("%d.%m.%Y %H:%M") }} by {{ issue["username"] }}
+            </p>
+            <table>
+                <tbody>
+                    <tr>
+                        <!-- <td>
+                            <form action="/comment/{{ issue["id"] }}", issue="issue">
+                                <input type="submit" value="Add comment">
+                            </form>
+                        </td> -->
+                        <td>
+                            <form action="/close_issue", method="POST">
+                                <input type="hidden" value={{ issue["id"] }} name="issue_id">
+                                <input class="danger" type="submit" value="Close issue">
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        {% endfor %}
+
+        {% else %}
+            <p>No issues reported</p>
+    {% endif %}
+    <hr>
+    <a href="/new_issue/{{ machine["id"] }}">
+        <input type="submit" value="Raise new issue">
+    </a>
+
+
+{% endblock %}
