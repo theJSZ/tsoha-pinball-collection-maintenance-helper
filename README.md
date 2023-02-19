@@ -6,7 +6,7 @@ In the pinball community it is not unusual to see collections of [several dozen 
 * for a player (who is not necessarily the owner of the machine) to report a malfunction
 * for the owner (or some other designated person) to see the reported malfunctions
 
-The finished app should have the following features:
+The finished app should have the following features:  
 TO DO:
 * A photo can be included in the report
 * An admin can invite other people to become normal users of a collection
