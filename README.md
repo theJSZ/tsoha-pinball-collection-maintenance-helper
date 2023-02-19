@@ -9,15 +9,15 @@ In the pinball community it is not unusual to see collections of [several dozen 
 The finished app should have the following features:  
 ###### TO DO:
 * A photo can be included in the report
-* An admin can invite other people to become normal users of a collection
+* An admin can invite other people to become normal users or other admins of a collection
 
 ###### DONE:
-* All users log in with a username and password DONE
-* A user can create a new collection which makes them an admin with regard to that collection DONE
-* An admin can edit the collection afterwards DONE
-* Any user can report a malfunction. The report always concerns a certain machine and must include a written description of what is wrong DONE
-* The malfunction is given a severity rating from 1 (not severe, e.g. a light that is not working) to 3 (very severe, e.g. an important feature of the game is impossible to achieve because a mechanical switch not working) DONE
-* An admin can mark a malfunction as fixed (i.e. delete the entry) DONE
+* All users log in with a username and password
+* A user can create a new collection which makes them an admin with regard to that collection
+* An admin can edit the collection afterwards
+* Any user can report a malfunction. The report always concerns a certain machine and must include a written description of what is wrong
+* The malfunction is given a severity rating from 1 (not severe, e.g. a light that is not working) to 3 (very severe, e.g. an important feature of the game is impossible to achieve because a mechanical switch not working)
+* An admin can mark a malfunction as fixed (i.e. delete the entry)
 
 ### How to use (locally):
 #### 1) installing
