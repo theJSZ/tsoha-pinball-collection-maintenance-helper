@@ -36,9 +36,13 @@ Install required packages:
 ```
 pip install -r requirements.txt
 ```
-Launch your postgresql server. I do it by `start-pg.sh` but there may be other ways? Build the database:
+Launch your postgresql server. I do it by `start-pg.sh` but there may be other ways?
+
+You probably want to create a new database in order to not mess with your existing one. You can do that by launching the interpreter: `psql` and using the command `CREATE DATABASE <your-database-name>;`
+
+Build the database:
 ```
-psql < schema.sql
+psql -d <your-database-name> < schema.sql
 ```
 Launch the app:
 ```
