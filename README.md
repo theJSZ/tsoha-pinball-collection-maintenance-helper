@@ -19,8 +19,23 @@ The finished app should have the following features:
 * The malfunction is given a severity rating from 1 (not severe, e.g. a light that is not working) to 3 (very severe, e.g. an important feature of the game is impossible to achieve because a mechanical switch not working)
 * An admin can mark a malfunction as fixed (i.e. delete the entry)
 
-### How to use (locally):
-#### 1) installing
+### Find it on Fly.io:
+https://pcmh.fly.dev/
+
+### Using the app
+After creating a user account you will see this:
+![](docs/1.jpg)
+
+Click the button to create a new collection. In this view you can name your collection and provide a list of machines it includes.  
+![](docs/2.jpg)  
+After this you can navigate to your collection and machines, adding or removing malfunction reports and/or machines as needed.  
+![](docs/3.jpg)  
+Here Batman has a serious malfunction, Austin Powers has a somewhat serious malfunction, and Cirqus Voltaire has a not serious malfunction. The machines in blue have no reported malfunctions.
+![](docs/4.jpg)
+Sure enough it is pretty serious.
+
+
+#### How to install locally (if need be, fly seems to be working):
 Clone the repository using your preferred method.  
 Go to the root directory. Create a file called `.env` with the following contents (replacing the secret key value with an actual random string):
 ```
@@ -48,17 +63,6 @@ Launch the app:
 ```
 flask run
 ```
-#### 2) using
-After creating a user account you will see this:
-![](docs/1.jpg)
-
-Click the button to create a new collection. In this view you can name your collection and provide a list of machines it includes.  
-![](docs/2.jpg)  
-After this you can navigate to your collection and machines, adding or removing malfunction reports and/or machines as needed.  
-![](docs/3.jpg)  
-Here Batman has a serious malfunction, Austin Powers has a somewhat serious malfunction, and Cirqus Voltaire has a not serious malfunction. The machines in blue have no reported malfunctions.
-![](docs/4.jpg)
-Sure enough it is pretty serious.
 
 #### To do:
 At the moment there is no way an admin can add other users (as admin or normal user) to their collection. This is an important feature to enable the whole player base to create issues. Only admins should be able to close them though, as well as add/remove machines from the collection.
