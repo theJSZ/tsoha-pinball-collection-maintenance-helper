@@ -1,4 +1,5 @@
 from db import db
+from flask import flash
 
 def check_new_username(username):
     if username == "":
