@@ -187,7 +187,10 @@ def input_new_issue():
         },
     )
     db.session.commit()
-    return redirect(f"/machine_info/{machine_id}")
+    # return redirect(f"/machine_info/{machine_id}")
+    return redirect(f"/collection/{session['collection_id']}")
+
+
 
 
 @app.route("/edit_collection", methods=["POST", "GET"])
