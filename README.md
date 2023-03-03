@@ -8,7 +8,7 @@ In the pinball community it is not unusual to see collections of [several dozen 
 
 The finished app should have the following features:  
 ###### TO DO:
-* A photo can be included in the report
+* Could be nice (but not critical) to be able to submit a photo with the issue.
 
 ###### DONE:
 * All users log in with a username and password
@@ -65,10 +65,3 @@ Launch the app:
 ```
 flask run
 ```
-
-#### To do:
-At the moment there is no way an admin can add other users (as admin or normal user) to their collection. This is an important feature to enable the whole player base to create issues. Only admins should be able to close them though, as well as add/remove machines from the collection.
-
-Could be nice (but not critical) to be able to submit a photo with the issue.
-
-Code is a horrible mess and should be made clearer if I only know how.
