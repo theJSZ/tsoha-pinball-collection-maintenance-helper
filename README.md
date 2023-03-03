@@ -9,7 +9,6 @@ In the pinball community it is not unusual to see collections of [several dozen 
 The finished app should have the following features:  
 ###### TO DO:
 * A photo can be included in the report
-* An admin can invite other people to become normal users or other admins of a collection
 
 ###### DONE:
 * All users log in with a username and password
@@ -17,7 +16,10 @@ The finished app should have the following features:
 * An admin can edit the collection afterwards
 * Any user can report a malfunction. The report always concerns a certain machine and must include a written description of what is wrong
 * The malfunction is given a severity rating from 1 (not severe, e.g. a light that is not working) to 3 (very severe, e.g. an important feature of the game is impossible to achieve because a mechanical switch not working)
+* When looking at reported malfunctions the user sees who reported it and when
 * An admin can mark a malfunction as fixed (i.e. delete the entry)
+* An admin can add other players to use their collection. They can be added either as normal users or as admins
+* An admin can remove users from their collection
 
 ### Find it on Fly.io:
 https://pcmh.fly.dev/
@@ -32,7 +34,7 @@ After this you can navigate to your collection and machines, adding or removing 
 ![](docs/3.jpg)  
 Here Batman has a serious malfunction, Austin Powers has a somewhat serious malfunction, and Cirqus Voltaire has a not serious malfunction. The machines in blue have no reported malfunctions.
 ![](docs/4.jpg)
-Sure enough it is pretty serious.
+Sure enough it is pretty serious. Only the admins see these red buttons.
 
 
 #### How to install locally (if need be, fly seems to be working):
