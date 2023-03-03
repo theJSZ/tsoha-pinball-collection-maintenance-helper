@@ -1,11 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h2>{{ machine["name"] }} </h2>
+    <h2>{{ machine["name"] }} in <a href="/collection/{{ machine['collection_id'] }}">{{ collection_name }}</a> </h2>
     <small>
         <form action="/delete_machine", method="POST">
             <input type="hidden" value={{ machine["id"] }} name="machine_id">
             <input type="hidden" value={{ machine["collection_id"] }} name="collection_id">
-            <input class="danger" type="submit" value="Remove machine from collection">
+            {% if is_admin %}
+                <input class="danger" type="submit" value="Remove machine from collection">
+            {% endif %}
         </form>
     </small>
     <hr>
@@ -30,14 +32,10 @@
             <p>
                 {{ issue["created_at"].strftime("%d.%m.%Y %H:%M") }} by {{ issue["username"] }}
             </p>
+            {% if is_admin %}
             <table>
                 <tbody>
                     <tr>
-                        <!-- <td>
-                            <form action="/comment/{{ issue["id"] }}", issue="issue">
-                                <input type="submit" value="Add comment">
-                            </form>
-                        </td> -->
                         <td>
                             <form action="/close_issue", method="POST">
                                 <input type="hidden" value={{ issue["id"] }} name="issue_id">
@@ -47,6 +45,7 @@
                     </tr>
                 </tbody>
             </table>
+            {% endif %}
 
         {% endfor %}
 

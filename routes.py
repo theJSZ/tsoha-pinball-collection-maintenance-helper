@@ -2,7 +2,7 @@ from app import app
 from db import db
 from flask import render_template, session, request, redirect, flash
 from werkzeug.security import check_password_hash, generate_password_hash
-from user import check_new_password, check_new_username
+from user import check_new_password, check_new_username, user_of_collection, username_to_id
 
 @app.route("/")
 def index():
@@ -28,7 +28,6 @@ def collections():
 
 @app.route("/collection/<int:collection_id>")
 def collection(collection_id):
-    # find machines of collection
     sql = """SELECT M.id, M.name, (SELECT COALESCE(MAX(severity), 0) AS max_severity
                                     FROM issues
                                     WHERE machine_id = M.id
@@ -45,12 +44,85 @@ def collection(collection_id):
 
     session["collection_id"] = collection_id
 
+    sql = "SELECT is_admin FROM rights WHERE user_id=:user_id AND collection_id=:collection_id"
+    is_admin = db.session.execute(sql, {"user_id": session["user_id"], "collection_id": session["collection_id"]}).fetchone()[0]
+
     return render_template(
         "collection.html",
         machines=machines,
         collection_name=collection_name,
-        collection_id=collection_id
+        collection_id=collection_id,
+        is_admin=is_admin
     )
+
+
+@app.route("/players", methods=["GET"])
+def players():
+    sql = "SELECT name FROM collections WHERE id = :collection_id"
+    collection_name = db.session.execute(
+        sql, {"collection_id": session["collection_id"]}
+    ).fetchone()[0]
+
+    sql = """SELECT U.id, U.username
+            FROM users U, rights R
+            WHERE U.id = R.user_id
+            AND R.collection_id=:collection_id
+            AND R.is_admin=:is_admin"""
+    admins = db.session.execute(sql, {"collection_id": session["collection_id"], "is_admin": "TRUE"}).fetchall()
+    normal_users = db.session.execute(sql, {"collection_id": session["collection_id"], "is_admin": "FALSE"}).fetchall()
+
+    return render_template("players.html", admins=admins, normal_users=normal_users, collection_name=collection_name, collection_id=session["collection_id"])
+
+@app.route("/add_players", methods=["GET", "POST"])
+def add_players():
+    if request.method == "GET":
+        sql = "SELECT name FROM collections WHERE id=:collection_id"
+        collection_name = db.session.execute(sql, {"collection_id": session["collection_id"]}).fetchone()[0]
+        return render_template("add_players.html", collection_name=collection_name)
+    if request.method == "POST":
+        normal_user_names = request.form["normal_users_to_add"].split("\n")
+        admin_names = request.form["admins_to_add"].split("\n")
+
+        for name in normal_user_names:
+            name = name.strip()
+            if name == "":
+                continue
+
+            user_id = username_to_id(name)
+            if not user_id:
+                flash(f'Did not find user {name}')
+                continue
+
+            if user_of_collection(user_id, session["collection_id"], name):
+                flash(f'{name} already a user of this collection')
+                continue
+
+            sql = "INSERT INTO rights (user_id, collection_id, is_admin) VALUES (:user_id, :collection_id, FALSE)"
+            db.session.execute(sql, {"user_id": user_id, "collection_id": session["collection_id"]})
+            db.session.commit()
+
+            flash(f'Added {name} as normal user')
+
+        for name in admin_names:
+            name = name.strip()
+            if name == "":
+                continue
+
+            user_id = username_to_id(name)
+            if not user_id:
+                flash(f'Did not find user {name}')
+                continue
+
+            if user_of_collection(user_id, session["collection_id"], name):
+                flash(f'{name} already a user of this collection')
+                continue
+
+            sql = "INSERT INTO rights (user_id, collection_id, is_admin) VALUES (:user_id, :collection_id, TRUE)"
+            db.session.execute(sql, {"user_id": user_id, "collection_id": session["collection_id"]})
+            db.session.commit()
+
+            flash(f'Added {name} as admin')
+        return redirect(f"/collection/{session['collection_id']}")
 
 
 @app.route("/logout")
@@ -145,6 +217,14 @@ def new_collection():
 #     issue = db.session.execute(sql, {"issue_id": issue_id}).fetchone()
 #     return render_template("/comment.html", issue=issue)
 
+@app.route("/delete_user_from_collection/<int:user_id>")
+def delete_user_from_collection(user_id):
+    sql = "DELETE FROM RIGHTS WHERE user_id=:user_id AND collection_id=:collection_id"
+    db.session.execute(sql, {"user_id": user_id, "collection_id": session["collection_id"]})
+    db.session.commit()
+    return redirect(f"/collection/{session['collection_id']}")
+
+
 
 @app.route("/machine_info/<int:machine_id>")
 def machine_info(machine_id):
@@ -157,8 +237,17 @@ def machine_info(machine_id):
             AND U.id = I.user_id"""
     issues = db.session.execute(sql, {"machine_id": machine_id}).fetchall()
 
+    sql = "SELECT name FROM collections WHERE id = :collection_id"
+    collection_name = db.session.execute(
+        sql, {"collection_id": session["collection_id"]}
+    ).fetchone()[0]
+
+    sql = "SELECT is_admin FROM rights WHERE user_id=:user_id AND collection_id=:collection_id"
+    is_admin = db.session.execute(sql, {"user_id": session["user_id"], "collection_id": session["collection_id"]}).fetchone()[0]
+    print(is_admin)
+
     return render_template(
-        "machine_info.html", machine=machine, issues=issues, n_issues=len(issues)
+        "machine_info.html", machine=machine, issues=issues, n_issues=len(issues), collection_name=collection_name, is_admin=is_admin
     )
 
 
@@ -196,10 +285,10 @@ def input_new_issue():
 @app.route("/edit_collection", methods=["POST", "GET"])
 def edit_collection():
     if request.method == "GET":
-        # collection_id = request.form["collection_id"]
+
         return render_template("edit_collection.html")
+
     if request.method == "POST":
-        collection_id = request.form["collection_id"]
         machine_names = request.form["machine_names"].split("\n")
         for machine_name in machine_names:
             if not machine_name:

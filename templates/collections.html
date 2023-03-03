@@ -4,7 +4,7 @@
     <hr>
     {% for collection in collections_list %}
         <p>
-            <a href="/collection/{{ collection["id"] }}">{{ collection["name"] }}</a>
+            <a href="/collection/{{ collection['id'] }}">{{ collection["name"] }}</a>
         </p>
     {% endfor %}
     <a href="/new_collection">

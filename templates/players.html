@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Users of <a href="/collection/{{ collection_id }}">{{ collection_name }}</a></h2>
+    <small style="color: #B66">Click name to delete</small>
+    <hr>
+    <table>
+        <thead>
+            <tr>
+                <th style="padding-right: 60px;">Admins</th>
+                <th>Normal users</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    {% for admin in admins %}
+                        <a href="/delete_user_from_collection/{{ admin[0] }}">{{ admin[1] }}</a><br>
+                    {% endfor %}
+                </td>
+                <td>
+                    {% for normal_user in normal_users %}
+                        <a href="/delete_user_from_collection/{{ normal_user[0] }}">{{ normal_user[1] }}</a><br>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

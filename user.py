@@ -28,3 +28,16 @@ def check_new_password(password, password_confirm):
         status = "invalid"
 
     return status
+
+
+def user_of_collection(user_id, collection_id, name):
+    if db.session.execute("SELECT * FROM rights WHERE user_id=:user_id AND collection_id=:collection_id", {"user_id": user_id, "collection_id": collection_id}).fetchone():
+        return True
+    return False
+
+def username_to_id(name):
+    try:
+        user_id = db.session.execute("SELECT id FROM users WHERE username=:username", {"username": name}).fetchone()[0]
+    except:
+        return None
+    return user_id
