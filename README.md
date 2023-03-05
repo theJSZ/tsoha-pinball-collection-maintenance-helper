@@ -1,4 +1,5 @@
 # Pinball collection maintenance helper
+![](docs/x.jpg)
 ###### Python / Flask / PostgreSQL project for the Spring 2023 course "Tietokantasovellus", University of Helsinki
 
 ### What and why:
