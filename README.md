@@ -31,7 +31,7 @@ Owners should create their collection and other players should (after registerin
 #### https://pcmh.fly.dev/  
 **NB**: sometimes on first interaction you will get an OperationalError that I was unable to fix, seems like if the server has been idle this might be more likely to happen? Page refresh should get you back into normal operation. SQLAlchemy explanation of this error: https://sqlalche.me/e/14/e3q8
 
-For testing purposes if you don't want to start from scratch, I have created a collection with a couple of users.  
+For testing purposes if you don't want to start from scratch, I have created a collection with a couple of users (please don't delete them from the collection..)  
 User **JHQ**, password **jhqjhqjhq** is an admin.  
 User **TestUser**, password **testuser** is a normal user.
 
