@@ -2,13 +2,13 @@
 {% block content %}
     <h2>Add players to {{ collection_name }}</h2>
     <form action="/add_players" method="POST">
-        <!-- Collection name: <input type="text" name="collection_name"><br> -->
         Players to add as normal users:<br>
             <textarea style="resize:none" rows="5" cols="30" name="normal_users_to_add" placeholder="Enter 1 username per line" autofocus></textarea><br>
         Players to add as admins:<br>
             <textarea style="resize:none" rows="5" cols="30" name="admins_to_add" placeholder="Enter 1 username per line"></textarea><br>
 
             <input type="hidden" name="collection_id" value={{ collection_id }}>
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             <input type="submit" value="Add players">
     </form>
 

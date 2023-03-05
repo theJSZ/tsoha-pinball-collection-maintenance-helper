@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h2>{{ machine["name"] }} in <a href="/collection/{{ machine['collection_id'] }}">{{ collection_name }}</a> </h2>
+    <h2>{{ machine["name"] }} in <a href="/collection/{{ machine.collection_id }}">{{ collection_name }}</a> </h2>
     <small>
         <form action="/delete_machine", method="POST">
-            <input type="hidden" value={{ machine["id"] }} name="machine_id">
-            <input type="hidden" value={{ machine["collection_id"] }} name="collection_id">
+            <input type="hidden" value={{ machine.id }} name="machine_id">
+            <input type="hidden" value={{ machine.collection_id }} name="collection_id">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             {% if is_admin %}
                 <input class="danger" type="submit" value="Remove machine from collection">
             {% endif %}
@@ -20,17 +21,17 @@
         {% for issue in issues %}
 
             <hr>
-            {% if issue["severity"] == 1 %}
+            {% if issue.severity == 1 %}
                 <p style="color: #8F8">{{ issue["content"] }}</p>
             {% endif %}
-            {% if issue["severity"] == 2 %}
+            {% if issue.severity == 2 %}
                 <p style="color: #FF8">{{ issue["content"] }}</p>
             {% endif %}
-            {% if issue["severity"] == 3 %}
+            {% if issue.severity == 3 %}
                 <p style="color: #F88">{{ issue["content"] }}</p>
             {% endif %}
             <p>
-                {{ issue["created_at"].strftime("%d.%m.%Y %H:%M") }} by {{ issue["username"] }}
+                {{ issue.created_at.strftime("%d.%m.%Y %H:%M") }} by {{ issue.username }}
             </p>
             {% if is_admin %}
             <table>
@@ -38,7 +39,8 @@
                     <tr>
                         <td>
                             <form action="/close_issue", method="POST">
-                                <input type="hidden" value={{ issue["id"] }} name="issue_id">
+                                <input type="hidden" value={{ issue.id }} name="issue_id">
+                                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                                 <input class="danger" type="submit" value="Close issue">
                             </form>
                         </td>
@@ -53,7 +55,7 @@
             <p>No issues reported</p>
     {% endif %}
     <hr>
-    <a href="/new_issue/{{ machine["id"] }}">
+    <a href="/new_issue/{{ machine.id }}">
         <input type="submit" value="Raise new issue">
     </a>
 

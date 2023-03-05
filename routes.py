@@ -3,6 +3,7 @@ from db import db
 from flask import render_template, session, request, redirect, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from user import check_new_password, check_new_username, user_of_collection, username_to_id
+import secrets
 
 @app.route("/")
 def index():
@@ -14,7 +15,7 @@ def collections():
     sql = """SELECT C.id, C.name
              FROM collections C, rights R
              WHERE R.user_id = :user_id
-               AND R.collection_id = C.id"""
+             AND R.collection_id = C.id"""
 
     if session.get("collection_id",0):
         del session["collection_id"]
@@ -67,9 +68,11 @@ def players():
             FROM users U, rights R
             WHERE U.id = R.user_id
             AND R.collection_id=:collection_id
-            AND R.is_admin=:is_admin"""
-    admins = db.session.execute(sql, {"collection_id": session["collection_id"], "is_admin": "TRUE"}).fetchall()
-    normal_users = db.session.execute(sql, {"collection_id": session["collection_id"], "is_admin": "FALSE"}).fetchall()
+            AND R.is_admin=:is_admin
+            AND U.id != :session_user_id
+            ORDER BY U.username"""
+    admins = db.session.execute(sql, {"collection_id": session["collection_id"], "is_admin": "TRUE", "session_user_id": session["user_id"]}).fetchall()
+    normal_users = db.session.execute(sql, {"collection_id": session["collection_id"], "is_admin": "FALSE", "session_user_id": session["user_id"]}).fetchall()
 
     return render_template("players.html", admins=admins, normal_users=normal_users, collection_name=collection_name, collection_id=session["collection_id"])
 
@@ -80,6 +83,7 @@ def add_players():
         collection_name = db.session.execute(sql, {"collection_id": session["collection_id"]}).fetchone()[0]
         return render_template("add_players.html", collection_name=collection_name)
     if request.method == "POST":
+
         normal_user_names = request.form["normal_users_to_add"].split("\n")
         admin_names = request.form["admins_to_add"].split("\n")
 
@@ -152,6 +156,7 @@ def login():
     sql = "SELECT id FROM users WHERE username = :username"
     user_id = db.session.execute(sql, {"username": username}).fetchone()[0]
     session["user_id"] = user_id
+    session["csrf_token"] = secrets.token_hex(16)
     return redirect("/collections")
 
 
@@ -193,37 +198,12 @@ def new_collection():
     return render_template("new_collection.html")
 
 
-# @app.route("/add_comment", methods=["POST"])
-# def add_comment():
-#     comment_content = request.form["comment_content"]
-#     issue_id = request.form["issue_id"]
-#     user_id = session["user_id"]
-#     machine_id = db.session.execute(
-#         "SELECT machine_id FROM issues WHERE id = :issue_id", {"issue_id": issue_id}
-#     ).fetchone()[0]
-
-#     sql = """INSERT INTO comments (user_id, issue_id, created_at, content)
-#             VALUES (:user_id, :issue_id, NOW(), :content)"""
-#     db.session.execute(
-#         sql, {"user_id": user_id, "issue_id": issue_id, "content": comment_content}
-#     )
-#     db.session.commit()
-#     return redirect(f"/machine_info/{machine_id}")
-
-
-# @app.route("/comment/<int:issue_id>")
-# def comment(issue_id):
-#     sql = "SELECT * FROM issues WHERE id = :issue_id"
-#     issue = db.session.execute(sql, {"issue_id": issue_id}).fetchone()
-#     return render_template("/comment.html", issue=issue)
-
 @app.route("/delete_user_from_collection/<int:user_id>")
 def delete_user_from_collection(user_id):
     sql = "DELETE FROM RIGHTS WHERE user_id=:user_id AND collection_id=:collection_id"
     db.session.execute(sql, {"user_id": user_id, "collection_id": session["collection_id"]})
     db.session.commit()
     return redirect(f"/collection/{session['collection_id']}")
-
 
 
 @app.route("/machine_info/<int:machine_id>")
@@ -243,8 +223,12 @@ def machine_info(machine_id):
     ).fetchone()[0]
 
     sql = "SELECT is_admin FROM rights WHERE user_id=:user_id AND collection_id=:collection_id"
-    is_admin = db.session.execute(sql, {"user_id": session["user_id"], "collection_id": session["collection_id"]}).fetchone()[0]
-    print(is_admin)
+    is_admin = db.session.execute(
+        sql,
+        {
+            "user_id": session["user_id"],
+            "collection_id": session["collection_id"]
+        }).fetchone()[0]
 
     return render_template(
         "machine_info.html", machine=machine, issues=issues, n_issues=len(issues), collection_name=collection_name, is_admin=is_admin
@@ -255,12 +239,13 @@ def machine_info(machine_id):
 def new_issue(machine_id):
     sql = "SELECT * FROM machines WHERE id = :machine_id"
     machine = db.session.execute(sql, {"machine_id": machine_id}).fetchone()
-    print(f"machine: {machine}")
     return render_template("new_issue.html", machine=machine)
 
 
 @app.route("/input_new_issue", methods=["POST"])
 def input_new_issue():
+    if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
     issue_content = request.form["issue_content"]
     machine_id = request.form["machine_id"]
     severity = request.form["severity"]
@@ -285,10 +270,12 @@ def input_new_issue():
 @app.route("/edit_collection", methods=["POST", "GET"])
 def edit_collection():
     if request.method == "GET":
-
         return render_template("edit_collection.html")
 
     if request.method == "POST":
+        if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
+
         machine_names = request.form["machine_names"].split("\n")
         for machine_name in machine_names:
             if not machine_name:
@@ -303,6 +290,8 @@ def edit_collection():
 
 @app.route("/validate_new_collection", methods=["POST"])
 def create_new_collection():
+    if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
     collection_name = request.form["collection_name"]
     machine_names = request.form["machine_names"].split("\n")
     sql = """SELECT C.name
@@ -342,8 +331,9 @@ def create_new_collection():
 
 @app.route("/close_issue", methods=["POST"])
 def close_issue():
+    if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
     issue_id = request.form["issue_id"]
-    print(f"***** trying to hide {issue_id} *******")
     user_id = session["user_id"]
     sql = "UPDATE issues SET closed_by = :user_id WHERE id = :issue_id RETURNING machine_id"
     machine_id = db.session.execute(sql, {"user_id": user_id, "issue_id": issue_id}).fetchone()[0]
@@ -352,6 +342,8 @@ def close_issue():
 
 @app.route("/delete_machine", methods=["POST"])
 def delete_machine():
+    if session["csrf_token"] != request.form["csrf_token"]:
+            abort(403)
     machine_id = request.form["machine_id"]
     collection_id = request.form["collection_id"]
     sql = "DELETE FROM machines WHERE id = :machine_id RETURNING name"

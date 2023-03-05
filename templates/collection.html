@@ -3,27 +3,29 @@
     <h2>{{ collection_name }}</h2>
 
     {% if is_admin %}
-        <form action="/players", method="GET">
+        <form style="display: inline;" action="/players", method="GET">
             <input type="submit" value="See players" title="See users and admins of this collection">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
-        <form action="/add_players", method="GET">
+        <form style="display: inline;" action="/add_players", method="GET">
             <input type="submit" value="Add players" title="Add players as users or admins. This will let them see the collection and report issues. Admins can add or remove machines and close issues.">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
     {% endif %}
 
     <hr>
     {% for machine in machines %}
-        {% if machine["max_severity"] == 0 %}
-            <a href="/machine_info/{{ machine['id'] }}">{{ machine["name"] }}</a><br>
+        {% if machine.max_severity == 0 %}
+            <a href="/machine_info/{{ machine.id }}">{{ machine.name }}</a><br>
         {% endif %}
-        {% if machine["max_severity"] == 1 %}
-            <a href="/machine_info/{{ machine['id'] }}" style="color: #8F8">{{ machine["name"] }}</a><br>
+        {% if machine.max_severity == 1 %}
+            <a href="/machine_info/{{ machine.id }}" style="color: #8F8">{{ machine.name }}</a><br>
         {% endif %}
-        {% if machine["max_severity"] == 2 %}
-            <a href="/machine_info/{{ machine['id'] }}" style="color: #FF8">{{ machine["name"] }}</a><br>
+        {% if machine.max_severity == 2 %}
+            <a href="/machine_info/{{ machine.id }}" style="color: #FF8">{{ machine.name }}</a><br>
         {% endif %}
-        {% if machine["max_severity"] == 3 %}
-            <a href="/machine_info/{{ machine['id'] }}" style="color: #F88">{{ machine["name"] }}</a><br>
+        {% if machine.max_severity == 3 %}
+            <a href="/machine_info/{{ machine.id }}" style="color: #F88">{{ machine.name }}</a><br>
         {% endif %}
     {% endfor %}
     <hr>
@@ -32,6 +34,7 @@
         <form action="/edit_collection", method="GET">
             <input type="hidden" value={{ collection_id }} name="collection_id">
             <input type="submit" value="Add machines">
+            <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </form>
     {% endif %}
 
