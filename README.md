@@ -30,7 +30,6 @@ Owners should create their collection and other players should (after registerin
 ### Find it on Fly.io:
 https://pcmh.fly.dev/  
 **NB**: sometimes on first interaction you will get an OperationalError, seems like if the server has been idle this might be more likely to happen? Page refresh should get you back into normal operation. SQLAlchemy explanation of this error: https://sqlalche.me/e/14/e3q8  
-**UPDATE**: this has possibly been fixed but it is a hacky fix and I don't know how to test it to be sure
 
 ### Using the app
 After creating a user account you will see this:
