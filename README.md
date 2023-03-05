@@ -28,8 +28,13 @@ Owners should create their collection and other players should (after registerin
 * Currently it is perhaps too easy to remove users from your collection, it only takes a single click in the user list view. On the other hand this should not be a feature that is needed very often. You can not remove yourself however so it should be impossible for a collection to become completely unattended
 
 ### Find it on Fly.io:
-https://pcmh.fly.dev/  
-**NB**: sometimes on first interaction you will get an OperationalError, seems like if the server has been idle this might be more likely to happen? Page refresh should get you back into normal operation. SQLAlchemy explanation of this error: https://sqlalche.me/e/14/e3q8  
+#### https://pcmh.fly.dev/  
+**NB**: sometimes on first interaction you will get an OperationalError that I was unable to fix, seems like if the server has been idle this might be more likely to happen? Page refresh should get you back into normal operation. SQLAlchemy explanation of this error: https://sqlalche.me/e/14/e3q8
+
+For testing purposes if you don't want to start from scratch, I have created a collection with a couple of users.  
+User **JHQ**, password **jhqjhqjhq** is an admin.  
+User **TestUser**, password **testuser** is a normal user.
+
 
 ### Using the app
 After creating a user account you will see this:
