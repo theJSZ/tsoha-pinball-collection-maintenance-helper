@@ -7,6 +7,11 @@ import secrets
 
 @app.route("/")
 def index():
+    # to wake up the connection?
+    try:
+        db.session.execute("SELECT 1 FROM users").fetchone()
+    except:
+        pass
     return render_template("index.html")
 
 
